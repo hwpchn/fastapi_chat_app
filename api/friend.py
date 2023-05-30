@@ -21,13 +21,19 @@ async def send_friend_request(friend_request: FriendRequestInput, token: str = D
     expiry_date = datetime.now() - timedelta(days=FRIEND_REQUEST_EXPIRY_DAYS)
     existing_request = FriendRequest.select().where(
         (FriendRequest.sender == sender) & (FriendRequest.receiver == receiver) & (
-                    FriendRequest.created_at > expiry_date))
+                FriendRequest.created_at > expiry_date))
     if existing_request.exists():
         raise HTTPException(status_code=400, detail="A recent request already exists")
 
     request = FriendRequest.create(sender=sender, receiver=receiver, status="pending")
-    return {"request_id": request.id, "status": "success", "sender_email": sender.email,
-            "receiver_email": receiver.email}
+    return {
+        "request_id": request.id,
+        "status": "success",
+        "sender_email": sender.email,
+        "receiver_email": receiver.email,
+        "created_at": request.created_at,
+        "updated_at": request.updated_at
+    }
 
 
 @friend_router.post("/accept_request")

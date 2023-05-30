@@ -1,9 +1,12 @@
 from pydantic import BaseModel, EmailStr
+import datetime
 
 
 class FriendRequestInput(BaseModel):
     sender_email: str
     receiver_email: str
+    created_at: datetime = datetime.datetime.now()
+    updated_at: datetime = datetime.datetime.now()
 
 
 class AcceptRejectRequestInput(BaseModel):
